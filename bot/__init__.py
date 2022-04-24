@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import asyncio
+import pathlib
 
 import discord
 from discord.ext import commands
@@ -32,8 +33,19 @@ async def ping(ctx: discord.ApplicationContext):
     await ctx.respond(f"Pong! Latency is {latency:.2f} ms")
 
 
+def load_cogs():
+    cogs_dir = pathlib.Path(__file__).parent / "cogs"
+
+    for filename in os.listdir(cogs_dir):
+        if filename.endswith(".py"):
+            module_name = filename[:-3]
+            bot.load_extension(f"bot.cogs.{module_name}")
+            print(f"Loaded {module_name} cog")
+
+
 def main(token: str):
     loop = asyncio.get_event_loop()
+    load_cogs()
 
     try:
         db.init_engine()

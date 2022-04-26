@@ -7,6 +7,7 @@ from PIL import Image, ImageFont, ImageDraw
 
 IMG_FORMATS = ["png", "jpg", "jpeg"]  # list of accepted image formats
 BG_DIR = pathlib.Path(__file__).parent / "bg"
+FONTS_DIR = pathlib.Path(__file__).parent / "fonts"
 CACHE_DIR = pathlib.Path(__file__).parent / "cache"
 
 
@@ -56,6 +57,17 @@ def circle_image(im: Image.Image) -> Image.Image:
     return circle_image
 
 
+def rounded_rectangle(size: tuple[int, int], corner_radius: float, color: tuple[int, ...] | str) -> Image.Image:
+    """
+    Get a rectangle with rounded corners of solid color
+    """
+
+    im = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(im)
+    draw.rounded_rectangle((0, 0, size[0], size[1]), corner_radius, color)
+    return im
+
+
 async def generate_levels_image(
     member: discord.Member, level: int, xp: int, max_xp: int
 ) -> pathlib.Path:
@@ -77,15 +89,29 @@ async def generate_levels_image(
     avatar_path = CACHE_DIR / f"member_avatar_{member.id}.png"
     final_img_path = CACHE_DIR / f"member_levels_{member.id}.jpg"
 
+    bg = Image.open(bg_path, formats=IMG_FORMATS)
+
     # prepare member avatar
     await member.display_avatar.save(avatar_path)
     avatar = Image.open(avatar_path, formats=IMG_FORMATS).resize((540, 540))
     circle_avatar = circle_image(avatar)
+    avatar_pos = center_to_corner((350, bg.size[1] // 2), circle_avatar.size)
+
+    # prepare text backdrop
+    txt_bd = rounded_rectangle((1070, 306), 25, (0, 0, 0, 192))
+
+    font_path = FONTS_DIR / "SF-Pro-Rounded-Regular.otf"
+    font = ImageFont.truetype(str(font_path), 200)
 
     # prepare final image
-    bg = Image.open(bg_path, formats=IMG_FORMATS)
-    avatar_pos = center_to_corner((350, bg.size[1] // 2), circle_avatar.size)
-    bg.paste(circle_avatar, avatar_pos, circle_avatar)
-    await loop.run_in_executor(None, bg.convert("RGB").save, final_img_path)
+    final_img = bg.copy()
 
+    # text backdrop
+    final_img.paste(txt_bd, (717, 495), txt_bd)
+
+    # member avatar
+    final_img.paste(circle_avatar, avatar_pos, circle_avatar)
+
+    # save image and return image path
+    await loop.run_in_executor(None, final_img.convert("RGB").save, final_img_path)
     return final_img_path

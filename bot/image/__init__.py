@@ -98,16 +98,20 @@ async def generate_levels_image(
     avatar_pos = center_to_corner((350, bg.size[1] // 2), circle_avatar.size)
 
     # prepare text backdrop
-    txt_bd = rounded_rectangle((1070, 306), 25, (0, 0, 0, 192))
+    txt_bd = rounded_rectangle((1070, 350), 25, (0, 0, 0, 192))
 
     font_path = FONTS_DIR / "SF-Pro-Rounded-Regular.otf"
-    font = ImageFont.truetype(str(font_path), 200)
+    username_font = ImageFont.truetype(str(font_path), 75)
 
     # prepare final image
     final_img = bg.copy()
+    final_draw = ImageDraw.Draw(final_img)
 
     # text backdrop
-    final_img.paste(txt_bd, (717, 495), txt_bd)
+    final_img.paste(txt_bd, (717, (bg.size[1] - txt_bd.size[1]) // 2), txt_bd)
+
+    # username
+    final_draw.text((757, 395), str(member), fill="white", font=username_font)
 
     # member avatar
     final_img.paste(circle_avatar, avatar_pos, circle_avatar)

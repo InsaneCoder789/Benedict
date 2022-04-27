@@ -117,8 +117,8 @@ async def generate_levels_image(
     )
 
     # prepare fonts
-    font_path = FONTS_DIR / "SF-Pro-Rounded-Regular.otf"
-    username_font = ImageFont.truetype(str(font_path), 75)
+    font_path = FONTS_DIR / "Roboto Round Regular.ttf"
+    username_font = ImageFont.truetype(str(font_path), 70)
 
     # prepare final image
     final_img = bg.copy()

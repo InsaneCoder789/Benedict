@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.mentions import AllowedMentions
+from sqlalchemy.future import select
 
 from bot import TESTING_GUILDS, db
 from bot.db import models
@@ -28,9 +28,13 @@ class Levels(commands.Cog):
         await ctx.defer()
 
         async with db.async_session() as session:
-            member_data: models.Member | None = await session.get(
-                models.Member, mem.id
+            q = (
+                select(models.Member)
+                .where(models.Member.id == mem.id)
+                .where(models.Member.guild_id == ctx.guild_id)
             )
+            result = await session.execute(q)
+            member_data = result.scalar()
 
             if member_data:
                 level = member_data.level
@@ -53,9 +57,7 @@ class Levels(commands.Cog):
 
         # Make a cool image thing here
         await ctx.respond(
-            f"{mem.mention}'s current level is **{level}** in this server",
-            file=discord.File(levels_img, filename=levels_img.name),
-            allowed_mentions=AllowedMentions.none(),
+            file=discord.File(levels_img, filename=levels_img.name)
         )
 
 

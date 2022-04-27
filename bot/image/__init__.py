@@ -57,7 +57,9 @@ def circle_image(im: Image.Image) -> Image.Image:
     return circle_image
 
 
-def rounded_rectangle(size: tuple[int, int], corner_radius: float, color: tuple[int, ...] | str) -> Image.Image:
+def rounded_rectangle(
+    size: tuple[int, int], corner_radius: float, color: tuple[int, ...] | str
+) -> Image.Image:
     """
     Get a rectangle with rounded corners of solid color
     """
@@ -98,8 +100,23 @@ async def generate_levels_image(
     avatar_pos = center_to_corner((350, bg.size[1] // 2), circle_avatar.size)
 
     # prepare text backdrop
-    txt_bd = rounded_rectangle((1070, 350), 25, (0, 0, 0, 192))
+    txt_bd = rounded_rectangle((1070, 350), 25, (0, 0, 0, 175))
 
+    # prepare xp bar
+    xp_bar_height = 55
+    xp_bar_max_width = 990
+    xp_bg_color = tuple([35 for _ in range(3)])
+    xp_color = tuple([random.randint(0, 255) for _ in range(3)])
+    xp_bar_bg = rounded_rectangle(
+        (xp_bar_max_width, xp_bar_height), xp_bar_height / 2, xp_bg_color
+    )
+    xp_bar = rounded_rectangle(
+        (int(xp / max_xp * xp_bar_max_width), xp_bar_height),
+        xp_bar_height / 2,
+        xp_color,
+    )
+
+    # prepare fonts
     font_path = FONTS_DIR / "SF-Pro-Rounded-Regular.otf"
     username_font = ImageFont.truetype(str(font_path), 75)
 
@@ -113,9 +130,16 @@ async def generate_levels_image(
     # username
     final_draw.text((757, 395), str(member), fill="white", font=username_font)
 
+    # xp bar
+    xp_bar_pos = (759, 558)
+    final_img.paste(xp_bar_bg, xp_bar_pos, xp_bar_bg)
+    final_img.paste(xp_bar, xp_bar_pos, xp_bar)
+
     # member avatar
     final_img.paste(circle_avatar, avatar_pos, circle_avatar)
 
     # save image and return image path
-    await loop.run_in_executor(None, final_img.convert("RGB").save, final_img_path)
+    await loop.run_in_executor(
+        None, final_img.convert("RGB").save, final_img_path
+    )
     return final_img_path

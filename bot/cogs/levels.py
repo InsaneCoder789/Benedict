@@ -1,4 +1,5 @@
 import discord
+from uuid import uuid4
 from discord.ext import commands
 from sqlalchemy.future import select
 
@@ -25,12 +26,10 @@ class Levels(commands.Cog):
         if not (mem := member or ctx.author):
             return
 
-        await ctx.defer()
-
         async with db.async_session() as session:
             q = (
                 select(models.Member)
-                .where(models.Member.id == mem.id)
+                .where(models.Member.user_id == mem.id)
                 .where(models.Member.guild_id == ctx.guild_id)
             )
             result = await session.execute(q)
@@ -41,13 +40,15 @@ class Levels(commands.Cog):
                 xp = member_data.xp
             else:
                 new_member_data = models.Member(
-                    id=mem.id, guild_id=ctx.guild_id
+                    id=uuid4().hex, user_id=mem.id, guild_id=ctx.guild_id
                 )
                 session.add(new_member_data)
                 await session.commit()
 
                 level = new_member_data.level
                 xp = new_member_data.xp
+
+        await ctx.defer()
 
         max_xp = (
             models.Member.base_level_requirement

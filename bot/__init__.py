@@ -9,12 +9,15 @@ from discord.ext import commands
 
 from bot import db
 
+THEME = discord.Color.purple()
+
 TESTING_GUILDS: list[int] | None = (
     list(map(int, json.loads(os.environ.get("TESTING_GUILDS") or "[]")))
     if "--debug" in sys.argv
     else None
 )
-bot = commands.Bot(description="Eggs Benedict")
+intents = discord.Intents().all()
+bot = commands.Bot(description="Eggs Benedict" ,intents = intents)
 
 
 @bot.event

@@ -1,6 +1,4 @@
 
-from os import remove
-from statistics import variance
 import discord
 from discord.ext import commands
 from discord.ext.commands.core import command
@@ -60,7 +58,8 @@ class AFK(commands.Cog):
         if message.author.id in afks.keys():
             afks.pop(message.author.id)
             try:
-                await message.author.edit(nick = remove(message.author.display_name))
+                authorname = message.author.display_name.replace("(AFK)", "")
+                await message.author.edit(nick = authorname)
             except:
                 pass
             await message.channel.send(f'Welcome back {message.author.name}, I removed you AFK')

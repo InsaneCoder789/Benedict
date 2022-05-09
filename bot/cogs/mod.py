@@ -9,7 +9,10 @@ from discord.ext import commands
 from discord.commands import \
     slash_command
 
-class SlashMod(commands.Cog):
+class Moderation(commands.Cog):
+    """
+    Commands to maintain peace and prosperity of a server
+    """
 
     def __init__(self, bot):
         self.bot = bot
@@ -138,4 +141,4 @@ class SlashMod(commands.Cog):
         await ctx.respond(embed=warnings)
 
 def setup(bot):
-    bot.add_cog(SlashMod(bot))
+    bot.add_cog(Moderation(bot))

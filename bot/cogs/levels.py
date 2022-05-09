@@ -7,6 +7,9 @@ from bot.db import models
 
 
 class Levels(commands.Cog):
+    """
+    To keep a track of how talkative you are !
+    """
     levels_group = discord.SlashCommandGroup(
         "levels", "Commands for the leveling system", guild_ids=TESTING_GUILDS
     )
@@ -44,4 +47,4 @@ class Levels(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Levels())
+    bot.add_cog(Levels(bot))

@@ -3,6 +3,10 @@ from discord.ext import commands, tasks
 
 
 class Status(commands.Cog):
+    """
+    Bot Status for Benedict to Run 
+
+    """
     def __init__(self, bot):
         self.bot = bot
         self.theme_color = discord.Color.purple()
@@ -11,7 +15,6 @@ class Status(commands.Cog):
             (discord.ActivityType.playing, "Minecraft"),
             (discord.ActivityType.listening, "To `/help`"),
             (discord.ActivityType.streaming, "Hypixel"),
-            (discord.ActivityType.watching, "[member_count] Members !"),
         ]
         self.status_index = 0
 

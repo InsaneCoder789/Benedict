@@ -4,6 +4,8 @@ import traceback
 import random
 from discord.ext import commands
 
+from bot import THEME
+
 class Dropdown(discord.ui.Select):
     def __init__(self):
 
@@ -48,15 +50,27 @@ class DropdownView(discord.ui.View):
         self.add_item(Dropdown())
 
 class Help(commands.Cog):
-    """ Benedict's Command Helper!"""
+    """ 
+    Benedict's Command Helper!
+    """
 
     def __init__(self, client):
         self.client = client
 
     @commands.slash_command()
     async def help(self, ctx):
+        """
+         Get help regarding the working of a specific command!
+        """
         await ctx.defer()
-        e = discord.Embed(title="Benedict help", description="I'm a cool multi-purpose to help you manage your server better...", color=discord.Color.blue())
+        e = discord.Embed(
+            title="Benedict help", 
+            description="I'm a cool multi-purpose to help you manage your server better...",
+            color=THEME)
+        e.set_thumbnail(url = ctx.bot.user.avatar.url )
+        e.set_author(
+            name = ctx.author,
+            icon_url = ctx.author.avatar.url)
         e.add_field(name="1) Moderation", value="```Commands to uphold the peace and integrity of the server```")
         e.add_field(name="2) Fun", value="```Commands to have some fun and relieve stress (or induce it)```")
         e.add_field(name="3) Bot commands", value="```Commands related to the bot, such as it's information etc```")

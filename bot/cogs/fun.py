@@ -2,7 +2,10 @@ import random
 import string
 import pyfiglet
 import discord
-from discord.ext import commands
+from discord.ext import commands 
+from discord.commands import Option
+import aiohttp
+
 
 from bot import TESTING_GUILDS, db
 from bot import THEME
@@ -220,5 +223,132 @@ class Fun(commands.Cog):
 
         ascii_text = pyfiglet.figlet_format(sentence)
         await ctx.respond(f"```{ascii_text}```")
+
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def rps(self, ctx, pick: Option(str, "Choose your pick, Rock, Paper and Scissors", choices=["Rock", "Paper", "Scissors"])):
+        """Play Rock Paper Scissors with Benedict's Appa !"""
+        await ctx.defer()
+        ai_rps = ["Rock", "Paper", "Scissors"]
+        ai_pick = random.choice(ai_rps)
+        if ai_pick == "Rock" and pick == "Scissors":
+            await ctx.respond(f"**{ai_pick}**! You lose")
+        if ai_pick == "Paper" and pick == "Rock":
+            await ctx.respond(f"**{ai_pick}**! You lose")
+        if ai_pick == "Scissors" and pick == "Paper":
+            await ctx.respond(f"**{ai_pick}**! You lose")
+        if pick == "Rock" and ai_pick == "Scissors":
+            await ctx.respond(f"**{ai_pick}**! You win")
+        if pick == "Paper" and ai_pick == "Rock":
+            await ctx.respond(f"**{ai_pick}**! You win")
+        if pick == "Scissors" and ai_pick == "Paper":
+            await ctx.respond(f"**{ai_pick}**! You win")
+        if pick == "Rock" and ai_pick == "Rock":
+            await ctx.respond(f"**{ai_pick}**! Tie")
+        if pick == "Scissors" and ai_pick == "Scissors":
+            await ctx.respond(f"**{ai_pick}**! Tie")
+        if pick == "Paper" and ai_pick == "Paper":
+            await ctx.respond(f"**{ai_pick}**! Tie")
+
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def password(self, ctx, amount: int = 2):
+        """Generates a password"""
+        if amount > 31:
+            await ctx.send("The password must be 30 characters or lower", ephemeral=True)
+            return
+        try:
+            nwpss = []
+            lst = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '!', '@',
+                   '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', ",", '}', ']',
+                   '[', ';', ':', '<', '>', '?', '/', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+            for x in range(amount):
+                newpass = random.choice(lst)
+                nwpss.append(newpass)
+            fnpss = ''.join(nwpss)
+
+            e = discord.Embed(title="Attempting to generate a password for you! (Since you are lazy!) **Please check your direct messages!**", color=THEME)
+            await ctx.respond(embed=e)
+            e = discord.Embed(title="Password Generator", description=f"Your One-Time-Password: {fnpss}", color=THEME)
+            await ctx.author.send(embed=e)
+        except Exception as e:
+            print(e)
+
+    @commands.slash_command(name="serverinfo", guild_ids=TESTING_GUILDS)
+    async def server_info(self, ctx: discord.ApplicationContext):
+        """
+        Get general information about the server
+        """
+
+        human_count = len(
+            [member for member in ctx.guild.members if not member.bot]
+        )
+        bot_count = ctx.guild.member_count - human_count
+
+        bene_embed = discord.Embed(
+            title=f"{ctx.guild.name} Information", color=THEME
+        )
+        if icon := ctx.guild.icon:
+            bene_embed.set_thumbnail(url=icon.url)
+
+        bene_embed.add_field(
+            name="Human Members", value=str(human_count), inline=False
+        )
+        bene_embed.add_field(
+            name="Bot Members", value=str(bot_count), inline=False
+        )
+        bene_embed.add_field(
+            name="Total Members",
+            value=str(ctx.guild.member_count),
+            inline=False,
+        )
+        bene_embed.add_field(
+            name="Role Count", value=str(len(ctx.guild.roles)), inline=False
+        )
+        bene_embed.add_field(
+            name="Server Owner", value=str(ctx.guild.owner), inline=False
+        )
+        bene_embed.add_field(name="Server ID", value=ctx.guild.id, inline=False)
+        bene_embed.add_field(
+            name="Server Age",
+            value=f"Created on <t:{int(ctx.guild.created_at.timestamp())}>",
+            inline=False,
+        )
+
+        await ctx.respond(embed=bene_embed)
+
+    @commands.slash_command(name="memberinfo", guild_ids=TESTING_GUILDS)
+    async def member_info(
+        self, ctx: discord.ApplicationContext, member: discord.Member = None
+    ):
+        """
+        Get general information about a member
+        """
+
+        await ctx.defer()
+
+        if not member:
+            member = ctx.author
+
+        bene_embed = discord.Embed(title=f"{member} Information", color=THEME)
+        if avatar := member.avatar:
+            bene_embed.set_thumbnail(url=avatar.url)
+
+        bene_embed.add_field(name="Member ID", value=member.id, inline=False)
+        bene_embed.add_field(
+            name="Joined Discord",
+            value=f"<t:{int(member.created_at.timestamp())}>",
+            inline=False,
+        )
+        bene_embed.add_field(
+            name="Joined Server",
+            value=f"<t:{int(member.joined_at.timestamp())}>",
+            inline=False,
+        )
+        bene_embed.add_field(
+            name="Highest Role", value=member.top_role.mention, inline=False
+        )
+        bene_embed.add_field(
+            name="Bot?", value="Yes" if member.bot else "No", inline=False
+        )
 def setup(bot):
     bot.add_cog(Fun())

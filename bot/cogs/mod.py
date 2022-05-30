@@ -21,6 +21,7 @@ from bot import db
 from bot import THEME
 from bot import views
 from bot.views import ConfirmView
+from bot.utils import str_time_to_timedelta
 
 class Moderation(commands.Cog):
     """

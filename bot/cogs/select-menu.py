@@ -33,10 +33,10 @@ class Dropdown(discord.ui.Select):
             "**Clear**(`/clear`)\nClears messages in a channel\n\n**ClearCap**(`/clearcap`) \n Set the maximum numbers of messages to be cleared\n\n**Slowmode**(`/slowmode`)\nAdd slowmode delay in the current channel\n\n**Ban**(`/ban`)\nPermanently remove a person from the server\n\n**Unban**(`/unban`)\nUnban a person from the server\n\n**Kick**(`/kick`)\nRemove a person from the server\n\n**Warn**(`/warn`)\nWarn a member for doing something they weren't supposed to\n\n**Infractions**(`/infractions`)\nSee all the infractions in this server\n\n**ClearInfractions**(`/clearinfractions`)\nClear somebody's infractions in the current server\n\n**Nuke**(`/nuke`)\nNuke is an easy way of deleting all messages in a channel!\n\n**ServerInfo**(`/serverinfo`)\nGet general information about the server\n\n**UserInfo**(`/memberinfo`)\nGet general information about a member")
             await interaction.response.send_message(embed=e, ephemeral=True)
         if self.values[0] == "Fun":
-            e = discord.Embed(title="Fun Commands", color=discord.Color.blue(), description="**Flip**(`/coinflip`)\nFlip a coin\n\n**RockPaperScissors**(`/rps`)\nPlay Rock Paper Scissors with Edith!\n\n**Emojify**(`/emojify`)\nTurn a sentence into emojis\n\n**Password**(`/password`)\nGenerate a password\n\n**AI**(`/ai`)\nAsk the AI a question!\n\n**Joke**(`/joke`)\nGives you a joke\n\n**ASCII**(`/ascii`)\nTurn a sentence into cool ASCII art\n\n**8Ball**(`/8ball`)\nCall upon the powers of the all knowning magic 8Ball\n\n**Remind**(`/remind`)\nSet a reminder. Example: /remind 1d 2h 12m 5s make lunch (All time options are not required)\n\n**AFK**(`/afk`)\nSets your AFK status\n\n**UnAFK**(`/unafk`)\nUnset your AFK status\n\n**Roll**(`/roll`)\nRoll a dice\n\n**Choose**(`/choose`)\nLet Edith choose the best option for you\n\n**YouTube**(`/youtube`)\nSearch for YouTube videos")
+            e = discord.Embed(title="Fun Commands", color=discord.Color.blue(), description="**Flip**(`/coinflip`)\nFlip a coin\n\n**RockPaperScissors**(`/rps`)\nPlay Rock Paper Scissors with Benedict\n\n**Emojify**(`/emojify`)\nTurn a sentence into emojis\n\n**Password**(`/password`)\nGenerate a password\n\n**AI**(`/ai`)\nAsk the AI a question!\n\n**Joke**(`/joke`)\nGives you a joke\n\n**ASCII**(`/ascii`)\nTurn a sentence into cool ASCII art\n\n**8Ball**(`/8ball`)\nCall upon the powers of the all knowning magic 8Ball\n\n**Remind**(`/remind`)\nSet a reminder. Example: /remind 1d 2h 12m 5s make lunch (All time options are not required)\n\n**AFK**(`/afk`)\nSets your AFK status\n\n**Roll**(`/roll`)\nRoll a dice\n\n**Choose**(`/choose`)\nLet Benedict choose the best option for you\n\n**YouTube**(`/youtube`)\nSearch for YouTube videos")
             await interaction.response.send_message(embed=e, ephemeral=True)
         if self.values[0] == "Bot Commands":
-            e = discord.Embed(title="Bot Commands", color=discord.Color.blue(), description="**Bot Information**(`/botinfo`)\nShows information about Edith\n\n**Uptime**(`/uptime`)\nShows the time the bot has been online for\n\n**Ping**(`/ping`)\nCheck the bots ping\n\n**Invite**(`/invite`)\nGives you a link to invite Edith\n\n**Vote**(`/vote`)\nGives you a link to vote for the bot(please do it!)")
+            e = discord.Embed(title="Bot Commands", color=discord.Color.blue(), description="**Bot Information**(`/botinfo`)\nShows information about Benedict\n\n**Uptime**(`/uptime`)\nShows the time the bot has been online for\n\n**Ping**(`/ping`)\nCheck the bots ping\n\n**Invite**(`/invite`)\nGives you a link to invite Benedict")
             await interaction.response.send_message(embed=e, ephemeral=True)
 
 
@@ -48,6 +48,7 @@ class DropdownView(discord.ui.View):
         self.add_item(Dropdown())
 
 class Help(commands.Cog):
+    """ Benedict's Command Helper!"""
 
     def __init__(self, client):
         self.client = client

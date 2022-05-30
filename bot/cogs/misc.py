@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 from bot import THEME , TESTING_GUILDS
 class Miscellaneous(commands.Cog):
     """
-    Commands to do general tasks
+ Benedict's General Information Cog
     """
 @commands.slash_command(guild_ids=TESTING_GUILDS)
 async def info(self, ctx: discord.ApplicationContext):

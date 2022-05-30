@@ -51,3 +51,10 @@ class ImpersonationLog(Base):
     impersonator_id = Column(BigInteger, nullable=False)
     message = Column(String, nullable=False)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
+
+class AFK(Base):
+    __tablename__ = "AFK"
+
+    id = Column(String , primary_key=True)
+    user_id = Column(BigInteger, nullable=False)
+    

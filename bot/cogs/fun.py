@@ -318,14 +318,9 @@ class Fun(commands.Cog):
 
     @commands.slash_command(name="memberinfo", guild_ids=TESTING_GUILDS)
     async def member_info(
-        self, ctx: discord.ApplicationContext, member: discord.Member = None
-    ):
-        """
-        Get general information about a member
-        """
-
+        self, ctx: discord.ApplicationContext, member: discord.Member = None):
+        """Displays the Userinfo a Person"""
         await ctx.defer()
-
         if not member:
             member = ctx.author
 
@@ -350,5 +345,6 @@ class Fun(commands.Cog):
         bene_embed.add_field(
             name="Bot?", value="Yes" if member.bot else "No", inline=False
         )
+        await ctx.respond(embed = bene_embed)
 def setup(bot):
     bot.add_cog(Fun())

@@ -91,11 +91,11 @@ async def generate_levels_image(
     avatar_path = CACHE_DIR / f"member_avatar_{member.id}.png"
     final_img_path = CACHE_DIR / f"member_levels_{member.id}.jpg"
 
-    bg = Image.open(bg_path, formats=IMG_FORMATS)
+    bg = Image.open(bg_path)
 
     # prepare member avatar
     await member.display_avatar.save(avatar_path)
-    avatar = Image.open(avatar_path, formats=IMG_FORMATS).resize((540, 540))
+    avatar = Image.open(avatar_path).resize((540, 540)).convert("RGBA")
     circle_avatar = circle_image(avatar)
     avatar_pos = center_to_corner((350, bg.size[1] // 2), circle_avatar.size)
 
@@ -119,6 +119,7 @@ async def generate_levels_image(
     # prepare fonts
     font_path = FONTS_DIR / "Roboto Round Regular.ttf"
     username_font = ImageFont.truetype(str(font_path), 70)
+    level_font = ImageFont.truetype(str(font_path), 50)
 
     # prepare final image
     final_img = bg.copy()
@@ -131,9 +132,27 @@ async def generate_levels_image(
     final_draw.text((757, 395), str(member), fill="white", font=username_font)
 
     # xp bar
-    xp_bar_pos = (759, 558)
+    xp_bar_pos = (759, 580)
     final_img.paste(xp_bar_bg, xp_bar_pos, xp_bar_bg)
     final_img.paste(xp_bar, xp_bar_pos, xp_bar)
+
+    # xp info
+    xp_text = f"{xp/1000:.2f}K / {max_xp/1000:.2f}K XP"
+    xp_text_size = final_draw.textsize(xp_text, font=level_font)
+    xp_text_pos = (
+        xp_bar_pos[0] + xp_bar_max_width - xp_text_size[0] - 10,
+        xp_bar_pos[1] - xp_text_size[1] - 20,
+    )
+    final_draw.text(xp_text_pos, xp_text, fill="white", font=level_font)
+
+    # level
+    lvl_text = f"Level {level}"
+    lvl_text_size = final_draw.textsize(lvl_text, font=level_font)
+    lvl_text_pos = (
+        xp_bar_pos[0] + 10,
+        xp_bar_pos[1] - lvl_text_size[1] - 20,
+    )
+    final_draw.text(lvl_text_pos, lvl_text, fill="white", font=level_font)
 
     # member avatar
     final_img.paste(circle_avatar, avatar_pos, circle_avatar)

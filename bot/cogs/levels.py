@@ -99,7 +99,7 @@ class Levels(commands.Cog):
                 member_data.xp += random.randint(5, 20)
                 await session.commit()
 
-        self.prev_msg_times[member.id] = msg.created_at
+            self.prev_msg_times[member.id] = msg.created_at
 
 
 def setup(bot):

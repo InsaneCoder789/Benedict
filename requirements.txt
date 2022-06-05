@@ -2,6 +2,7 @@ py-cord==2.0.0b5
 sqlalchemy
 alembic
 aiosqlite
+pillow
 python-dotenv
 black
 flake8

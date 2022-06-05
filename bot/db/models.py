@@ -1,7 +1,16 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, BigInteger, Integer
+from sqlalchemy import Column, BigInteger, Integer, Boolean
 
 Base = declarative_base()
+
+
+class GuildSettings(Base):
+    __tablename__ = "guild_settings"
+
+    guild_id = Column(BigInteger, primary_key=True)
+
+    levels_channel = Column(BigInteger, nullable=True)
+    levels_enabled = Column(Boolean, default=True, nullable=False)
 
 
 class Member(Base):

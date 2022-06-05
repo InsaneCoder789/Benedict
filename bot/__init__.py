@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 from bot import db
+from bot.errors import CommandDisabledError
 
 TESTING_GUILDS: list[int] | None = (
     list(map(int, json.loads(os.environ.get("TESTING_GUILDS") or "[]")))
@@ -21,6 +22,25 @@ bot = commands.Bot(description="Eggs Benedict")
 async def on_ready():
     if user := bot.user:
         print("Logged in as", user)
+
+
+@bot.event
+async def on_application_command_error(ctx: discord.ApplicationContext, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+
+    if isinstance(error, CommandDisabledError):
+        await ctx.respond(
+            f"`/{error.command.qualified_name}` is disabled in this server. If you believe this is a mistake please contact a server admin or my developers.",
+            ephemeral=True,
+        )
+        return
+
+    await ctx.respond(
+        f"Something went wrong while cooking your Eggs Benedict, please copy paste the following text and report it to my developers:```{error}```",
+        ephemeral=True,
+    )
+    raise error
 
 
 @bot.slash_command(guild_ids=TESTING_GUILDS)

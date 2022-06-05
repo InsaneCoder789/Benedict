@@ -9,6 +9,7 @@ from sqlalchemy.future import select
 from bot import TESTING_GUILDS, db
 from bot.db import models
 from bot.image import generate_levels_image
+from bot.checks import guild_setting
 
 
 class Levels(commands.Cog):
@@ -22,6 +23,7 @@ class Levels(commands.Cog):
     # { guild id : { user id : time of last XP acknowledged msg } }
     prev_msg_times: dict[int, dict[int, datetime]] = {}
 
+    @guild_setting("levels_enabled", True)
     @levels_group.command()
     async def rank(
         self,
@@ -74,6 +76,19 @@ class Levels(commands.Cog):
     async def on_message(self, msg: discord.Message):
         if msg.author.bot or not msg.guild:
             return
+
+        async with db.async_session() as session:
+            if guild_settings := await session.get(
+                models.GuildSettings, msg.guild.id
+            ):
+                if not guild_settings.levels_enabled:
+                    return
+            else:
+                new_guild_settings = models.GuildSettings(
+                    guild_id=msg.guild.id
+                )
+                session.add(new_guild_settings)
+                await session.commit()
 
         member = msg.author
         guild = msg.guild

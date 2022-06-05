@@ -5,10 +5,12 @@ import asyncio
 import pathlib
 
 import discord
+from discord.commands.errors import ApplicationCommandInvokeError
 from discord.ext import commands
+from discord.ext.commands import errors as discord_errors
 
 from bot import db
-from bot.errors import CommandDisabledError
+from bot import errors as bot_errors
 
 TESTING_GUILDS: list[int] | None = (
     list(map(int, json.loads(os.environ.get("TESTING_GUILDS") or "[]")))
@@ -26,21 +28,32 @@ async def on_ready():
 
 @bot.event
 async def on_application_command_error(ctx: discord.ApplicationContext, error):
-    if isinstance(error, commands.CommandNotFound):
-        return
+    if isinstance(error, ApplicationCommandInvokeError):
+        error = error.original
 
-    if isinstance(error, CommandDisabledError):
+    if isinstance(error, bot_errors.CommandDisabledError):
         await ctx.respond(
             f"`/{error.command.qualified_name}` is disabled in this server. If you believe this is a mistake please contact a server admin or my developers.",
             ephemeral=True,
         )
-        return
 
-    await ctx.respond(
-        f"Something went wrong while cooking your Eggs Benedict, please copy paste the following text and report it to my developers:```{error}```",
-        ephemeral=True,
-    )
-    raise error
+    elif isinstance(error, discord_errors.MissingPermissions):
+        permissions = ", ".join(
+            [
+                perm.replace("_", " ").capitalize()
+                for perm in error.missing_permissions
+            ]
+        )
+        await ctx.respond(
+            f"You need {permissions} permission(s) to use `/{ctx.command.qualified_name}`.",
+            ephemeral=True,
+        )
+
+    else:
+        await ctx.respond(
+            f"Something went wrong while cooking your Eggs Benedict, please copy paste the following text and report it to my developers:```{error}```"
+        )
+        raise error
 
 
 @bot.slash_command(guild_ids=TESTING_GUILDS)

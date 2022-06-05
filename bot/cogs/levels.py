@@ -23,6 +23,71 @@ class Levels(commands.Cog):
     # { guild id : { user id : time of last XP acknowledged msg } }
     prev_msg_times: dict[int, dict[int, datetime]] = {}
 
+    @commands.has_guild_permissions(administrator=True)
+    @levels_group.command()
+    async def enabled(self, ctx: discord.ApplicationContext, value: bool):
+        """
+        Enable or disable the leveling system in the current server
+        """
+
+        async with db.async_session() as session:
+            guild_settings: models.GuildSettings | None = await session.get(
+                models.GuildSettings, ctx.guild_id
+            )
+
+            if guild_settings:
+                if guild_settings.levels_enabled == value:
+                    await ctx.respond(
+                        f"{'✅' if value else '❌'} Levels are already **{'enabled' if value else 'disabled'}** in this server."
+                    )
+                    return
+
+                guild_settings.levels_enabled = value  # type: ignore
+            else:
+                new_guild_settings = models.GuildSettings(
+                    guild_id=ctx.guild_id, levels_enabled=value
+                )
+                session.add(new_guild_settings)
+
+            await session.commit()
+
+        await ctx.respond(
+            f"{'✅' if value else '❌'} Levels are now **{'enabled' if value else 'disabled'}** in this server."
+        )
+
+    @commands.has_guild_permissions(administrator=True)
+    @levels_group.command()
+    async def channel(
+        self, ctx: discord.ApplicationContext, channel: discord.TextChannel
+    ):
+        """
+        Set the channel where level up messages will be sent
+        """
+
+        async with db.async_session() as session:
+            guild_settings: models.GuildSettings | None = await session.get(
+                models.GuildSettings, ctx.guild_id
+            )
+
+            if guild_settings:
+                if guild_settings.levels_channel == channel.id:
+                    await ctx.respond(
+                        f"Levels channel is already set to {channel.mention}."
+                    )
+                    return
+
+                guild_settings.levels_channel = channel.id  # type: ignore
+
+            else:
+                new_guild_settings = models.GuildSettings(
+                    guild_id=ctx.guild_id, levels_channel=channel.id
+                )
+                session.add(new_guild_settings)
+
+            await session.commit()
+
+        await ctx.respond(f"Levels channel is now set to {channel.mention}.")
+
     @guild_setting("levels_enabled", True)
     @levels_group.command()
     async def rank(
@@ -84,10 +149,8 @@ class Levels(commands.Cog):
                 if not guild_settings.levels_enabled:
                     return
             else:
-                new_guild_settings = models.GuildSettings(
-                    guild_id=msg.guild.id
-                )
-                session.add(new_guild_settings)
+                guild_settings = models.GuildSettings(guild_id=msg.guild.id)
+                session.add(guild_settings)
                 await session.commit()
 
         member = msg.author
@@ -130,9 +193,9 @@ class Levels(commands.Cog):
                     member_data.xp -= xp_goal
                     member_data.level += 1
 
-                    # TODO: Add option to change level channel
+                    lvl_up_channel: discord.TextChannel = guild.get_channel(guild_settings.levels_channel) if guild_settings.levels_channel else msg.channel  # type: ignore
                     asyncio.create_task(
-                        msg.channel.send(
+                        lvl_up_channel.send(
                             self.LVL_UP_MSG.format(
                                 member=member, level=member_data.level
                             )

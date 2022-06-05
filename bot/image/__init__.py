@@ -190,7 +190,9 @@ async def generate_levels_image(
     final_img.paste(circle_avatar, avatar_pos, circle_avatar)
 
     # save image and return image path
-    await loop.run_in_executor(
-        None, final_img.convert("RGB").save, final_img_path
-    )
+
+    def save():
+        final_img.convert("RGB").save(final_img_path, optimize=True, quality=93)
+
+    await loop.run_in_executor(None, save)
     return final_img_path

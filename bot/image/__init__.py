@@ -65,6 +65,19 @@ def circle_image(im: Image.Image) -> Image.Image:
     return circle_image
 
 
+def rectangle(
+    size: tuple[int, int], color: tuple[int, ...] | str
+) -> Image.Image:
+    """
+    Get a rectangle of solid color
+    """
+
+    im = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(im)
+    draw.rectangle((0, 0, size[0], size[1]), color)
+    return im
+
+
 def rounded_rectangle(
     size: tuple[int, int], corner_radius: float, color: tuple[int, ...] | str
 ) -> Image.Image:
@@ -121,9 +134,8 @@ async def generate_levels_image(
     # prepare xp bar
     xp_color = tuple([random.randint(0, 255) for _ in range(3)])
     xp_bar_size = (int(xp / max_xp * xp_bar_max_width), xp_bar_height)
-    xp_bar = rounded_rectangle(
+    xp_bar = rectangle(
         xp_bar_size,
-        xp_bar_height / 2,
         xp_color,
     )
 
@@ -138,7 +150,7 @@ async def generate_levels_image(
     # prepare fonts
     font_path = FONTS_DIR / "Roboto Round Regular.ttf"
     username_font = ImageFont.truetype(str(font_path), 70)
-    level_font = ImageFont.truetype(str(font_path), 50)
+    level_font = ImageFont.truetype(str(font_path), 56)
 
     # prepare final image
     final_img = bg.copy()
@@ -160,7 +172,7 @@ async def generate_levels_image(
     xp_text = f"{xp_x}.{str(xp_r)[:2]}K / {max_xp/1000:.2f}K XP"
     xp_text_size = final_draw.textsize(xp_text, font=level_font)
     xp_text_pos = (
-        xp_bar_pos[0] + xp_bar_max_width - xp_text_size[0] - 10,
+        xp_bar_pos[0] + xp_bar_max_width - xp_text_size[0],
         xp_bar_pos[1] - xp_text_size[1] - 20,
     )
     final_draw.text(xp_text_pos, xp_text, fill="white", font=level_font)
@@ -169,7 +181,7 @@ async def generate_levels_image(
     lvl_text = f"Level {level}"
     lvl_text_size = final_draw.textsize(lvl_text, font=level_font)
     lvl_text_pos = (
-        xp_bar_pos[0] + 10,
+        xp_bar_pos[0],
         xp_bar_pos[1] - lvl_text_size[1] - 20,
     )
     final_draw.text(lvl_text_pos, lvl_text, fill="white", font=level_font)

@@ -12,6 +12,10 @@ CACHE_DIR = pathlib.Path(__file__).parent / "cache"
 
 
 def delete_dir(dir_path: pathlib.Path):
+    """
+    Recursively delete a directory
+    """
+
     for filename in os.listdir(dir_path):
         file_path = dir_path / filename
 
@@ -35,6 +39,10 @@ os.mkdir(CACHE_DIR)
 def center_to_corner(
     center_pos: tuple[int, int], size: tuple[int, int]
 ) -> tuple[float, float]:
+    """
+    Convert a center position to a corner position
+    """
+
     return (
         center_pos[0] - size[0] // 2,
         center_pos[1] - size[1] // 2,
@@ -137,7 +145,8 @@ async def generate_levels_image(
     final_img.paste(xp_bar, xp_bar_pos, xp_bar)
 
     # xp info
-    xp_text = f"{xp/1000:.2f}K / {max_xp/1000:.2f}K XP"
+    xp_x, xp_r = divmod(xp, 1000)
+    xp_text = f"{xp_x}.{str(xp_r)[:2]}K / {max_xp/1000:.2f}K XP"
     xp_text_size = final_draw.textsize(xp_text, font=level_font)
     xp_text_pos = (
         xp_bar_pos[0] + xp_bar_max_width - xp_text_size[0] - 10,

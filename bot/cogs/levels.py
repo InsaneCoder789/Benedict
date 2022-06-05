@@ -11,6 +11,9 @@ from bot.image import generate_levels_image
 
 
 class Levels(commands.Cog):
+    # first number is min, second is max
+    XP_REWARD_RANGE = (2, 5)
+
     levels_group = discord.SlashCommandGroup(
         "levels", "Commands for the leveling system", guild_ids=TESTING_GUILDS
     )
@@ -96,7 +99,7 @@ class Levels(commands.Cog):
                     )
                     session.add(member_data)
 
-                member_data.xp += random.randint(5, 20)
+                member_data.xp += random.randint(*self.XP_REWARD_RANGE)
                 await session.commit()
 
             self.prev_msg_times[member.id] = msg.created_at

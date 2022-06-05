@@ -192,7 +192,9 @@ async def generate_levels_image(
     # save image and return image path
 
     def save():
-        final_img.convert("RGB").save(final_img_path, optimize=True, quality=93)
+        final_img.convert("RGB").save(
+            final_img_path, optimize=True, quality=93
+        )
 
     await loop.run_in_executor(None, save)
     return final_img_path

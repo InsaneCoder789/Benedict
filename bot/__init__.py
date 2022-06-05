@@ -11,13 +11,21 @@ from discord.ext.commands import errors as discord_errors
 
 from bot import db
 from bot import errors as bot_errors
+from bot.views import PaginatedEmbedView
+
+THEME = discord.Color.purple()
 
 TESTING_GUILDS: list[int] | None = (
     list(map(int, json.loads(os.environ.get("TESTING_GUILDS") or "[]")))
     if "--debug" in sys.argv
     else None
 )
-bot = commands.Bot(description="Eggs Benedict")
+
+
+intents = discord.Intents().all()
+bot = commands.Bot(description="Eggs Benedict", intents = intents)
+
+HELP_EMBEDS: list[discord.Embed] = []
 
 
 @bot.event
@@ -65,16 +73,13 @@ async def ping(ctx: discord.ApplicationContext):
     latency = ctx.bot.latency * 1000
     await ctx.respond(f"Pong! Latency is {latency:.2f} ms")
 
-
 def load_cogs():
     cogs_dir = pathlib.Path(__file__).parent / "cogs"
-
     for filename in os.listdir(cogs_dir):
         if filename.endswith(".py"):
             module_name = filename[:-3]
             bot.load_extension(f"bot.cogs.{module_name}")
             print(f"Loaded {module_name} cog")
-
 
 def main(token: str):
     loop = asyncio.get_event_loop()

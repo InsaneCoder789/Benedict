@@ -3,7 +3,7 @@ import os
 import pathlib
 import random
 import discord
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageFont, ImageDraw, ImageChops
 
 IMG_FORMATS = ["png", "jpg", "jpeg"]  # list of accepted image formats
 BG_DIR = pathlib.Path(__file__).parent / "bg"
@@ -110,18 +110,29 @@ async def generate_levels_image(
     # prepare text backdrop
     txt_bd = rounded_rectangle((1070, 350), 25, (0, 0, 0, 175))
 
-    # prepare xp bar
+    # prepare xp bar bg
     xp_bar_height = 55
     xp_bar_max_width = 990
     xp_bg_color = tuple([35 for _ in range(3)])
-    xp_color = tuple([random.randint(0, 255) for _ in range(3)])
     xp_bar_bg = rounded_rectangle(
         (xp_bar_max_width, xp_bar_height), xp_bar_height / 2, xp_bg_color
     )
+
+    # prepare xp bar
+    xp_color = tuple([random.randint(0, 255) for _ in range(3)])
+    xp_bar_size = (int(xp / max_xp * xp_bar_max_width), xp_bar_height)
     xp_bar = rounded_rectangle(
-        (int(xp / max_xp * xp_bar_max_width), xp_bar_height),
+        xp_bar_size,
         xp_bar_height / 2,
         xp_color,
+    )
+
+    # making sure that xp bar doesn't go over the xp bar bg
+    xp_bar = ImageChops.multiply(
+        rounded_rectangle(
+            (xp_bar_max_width, xp_bar_height), xp_bar_height / 2, "white"
+        ),
+        xp_bar,
     )
 
     # prepare fonts

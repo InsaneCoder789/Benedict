@@ -19,7 +19,7 @@ class Levels(commands.Cog):
         "levels", "Commands for the leveling system", guild_ids=TESTING_GUILDS
     )
 
-    # { guild id : { user id : last sent message time } }
+    # { guild id : { user id : time of last XP acknowledged msg } }
     prev_msg_times: dict[int, dict[int, datetime]] = {}
 
     @levels_group.command()

@@ -3,6 +3,7 @@ sqlalchemy
 alembic
 aiosqlite
 pillow
+pyfiglet
 python-dotenv
 black
 flake8

@@ -1,10 +1,7 @@
 import re
-import sys
 from typing import Any
 from datetime import timedelta
 import aiohttp
-import discord
-from discord.ext import commands
 
 
 def get_time(
@@ -42,6 +39,8 @@ def str_time_to_timedelta(
         seconds=actual_seconds,
     )
     return datetime_obj
+
+
 async def async_mirror(obj: Any):
     """
     Coroutine to return the passed object. Useful for returning a default

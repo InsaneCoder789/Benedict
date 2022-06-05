@@ -9,8 +9,7 @@ import asyncio
 import math
 from discord.ext import commands
 from bot import TESTING_GUILDS
-from discord.commands import \
-    slash_command
+from discord.commands import slash_command
 from typing import Sequence
 from uuid import uuid4
 from discord.errors import HTTPException
@@ -22,6 +21,7 @@ from bot import THEME
 from bot import views
 from bot.views import ConfirmView
 from bot.utils import str_time_to_timedelta
+
 
 class Moderation(commands.Cog):
     """
@@ -663,6 +663,7 @@ class Moderation(commands.Cog):
 
         else:
             await ctx.respond(embed=log_embeds[0])
+
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

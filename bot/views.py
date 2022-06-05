@@ -127,6 +127,8 @@ class PollView(discord.ui.View):
             asyncio.create_task(
                 user.send("You cannot vote in the same poll twice!")
             )
+
+
 class PaginatedSelectView(discord.ui.View):
     """
     Paginated select menu for more than 25 options.

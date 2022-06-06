@@ -10,6 +10,7 @@ from discord.ext.prettyhelp import PrettyHelp
 from bot import db
 from bot.views import PaginatedEmbedView
 
+
 THEME = discord.Color.purple()
 
 TESTING_GUILDS: list[int] | None = (
@@ -29,6 +30,7 @@ HELP_EMBEDS: list[discord.Embed] = []
 async def on_ready():
     if user := bot.user:
         print("Logged in as", user)
+        
 
 
 @bot.slash_command(guild_ids=TESTING_GUILDS)

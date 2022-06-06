@@ -5,6 +5,7 @@ import random
 from discord.ext import commands
 
 from bot import THEME
+import bot
 
 class Dropdown(discord.ui.Select):
     def __init__(self):
@@ -54,8 +55,8 @@ class Help(commands.Cog):
     Benedict's Command Helper!
     """
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.slash_command()
     async def help(self, ctx):

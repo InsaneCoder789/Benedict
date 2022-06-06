@@ -1,7 +1,10 @@
-py-cord==2.0.0b5
+py-cord==2.0.0b7
 sqlalchemy
 alembic
 aiosqlite
 python-dotenv
 black
 flake8
+youtube-dl
+pynacl
+FFmpeg

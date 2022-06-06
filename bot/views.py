@@ -86,7 +86,7 @@ class AutoModView(discord.ui.View):
 class PollButton(discord.ui.Button):
     def __init__(self, number: int):
         self.number = number
-        super().__init__(label=number, style=ButtonStyle.primary)
+        super().__init__(label=str(number), style=ButtonStyle.primary)
 
     async def callback(self, interaction: discord.Interaction):
         self.view.user_vote(interaction.user, self.number)
@@ -100,32 +100,35 @@ class PollView(discord.ui.View):
         self.voters: list[int] = []  # list of user ids
 
         children = []
-        for number, option_name in enumerate(options):
+        for number, option_name in enumerate(options, start=1):
             self.votes[option_name] = 0
-            button = PollButton(number + 1)
+            button = PollButton(number)
             children.append(button)
 
-        length_seconds = poll_length * 60
-        super().__init__(*children, timeout=length_seconds)
+        length_seconds = int(poll_length * 60)
+        super().__init__(*children, timeout=None)
         asyncio.create_task(self.stop_poll(length_seconds))
 
     async def stop_poll(self, time: int):
         await asyncio.sleep(time)
         self.stop()
 
-    def user_vote(self, user: discord.User, number: int):
-        if user.id not in self.voters:
+    async def user_vote(self, interaction: discord.Interaction, number: int):
+        if not interaction.user:
+            return
+
+        if interaction.user.id not in self.voters:
             option_name = self.options[number - 1]
             self.votes[option_name] += 1
 
-            self.voters.append(user.id)
-            asyncio.create_task(
-                user.send(f"You have voted for {option_name}!")
+            self.voters.append(interaction.user.id)
+            await interaction.response.send_message(
+                f"You voted for **{option_name}**", ephemeral=True
             )
 
         else:
-            asyncio.create_task(
-                user.send("You cannot vote in the same poll twice!")
+            await interaction.response.send_message(
+                "You cannot vote in the same poll twice!", ephemeral=True
             )
 class PaginatedSelectView(discord.ui.View):
     """
@@ -284,3 +287,28 @@ class PaginatedEmbedView(discord.ui.View):
         if interaction.id == self.author_id:
             await interaction.message.delete()
             self.stop()
+
+class ReportView(discord.ui.View):
+    anonymous: bool
+
+    def __init__(self, author_id: int):
+        super().__init__(timeout=5)
+        self.author_id = author_id
+
+    @discord.ui.button(label="Yes", style=ButtonStyle.primary)
+    async def yes(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        if self.author_id == interaction.user.id:
+            self.anonymous = False
+            self.stop()
+            await interaction.message.edit(content="Sending...", view=None)
+
+    @discord.ui.button(label="No", style=ButtonStyle.secondary)
+    async def no(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        if self.author_id == interaction.user.id:
+            self.anonymous = True
+            self.stop()
+            await interaction.message.edit(content="Sending...", view=None)

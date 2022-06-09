@@ -665,11 +665,11 @@ class Moderation(commands.Cog):
 
         else:
             await ctx.respond(embed=log_embeds[0])
-    @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def suggest(self, ctx: discord.ApplicationContext, report: str):
-        """
+            @commands.slash_command(guild_ids=TESTING_GUILDS)
+            async def report(self, ctx: discord.ApplicationContext, report: str):
+              """
         Report a Bug to the Developers
-        """
+             """
 
         report_view = ReportView(ctx.author.id)
         await ctx.respond(
@@ -699,12 +699,13 @@ class Moderation(commands.Cog):
         await report_channel.send(
             report_msg, allowed_mentions=discord.AllowedMentions.none()
         )
-    @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def timeout(self, ctx, member: Option(discord.Member), minutes: Option(int)):
-        """Apply a timeout to a member"""
-
-        duration = datetime.timedelta(minutes=minutes)
-        await member.timeout_for(duration)#timeout for the amount of time given, then remove timeout
-        await ctx.reply(f"Member timed out for {minutes} minutes.")	
+        
+        @commands.slash_command(guild_ids=TESTING_GUILDS)
+        async def timeout(self, ctx, member: Option(discord.Member), minutes: Option(int)):
+           """Apply a timeout to a member"""
+           duration = datetime.timedelta(minutes=minutes)
+           await member.timeout_for(duration)#timeout for the amount of time given, then remove timeout
+           await ctx.reply(f"Member timed out for {minutes} minutes.")
+           	
 def setup(bot):
     bot.add_cog(Moderation(bot))

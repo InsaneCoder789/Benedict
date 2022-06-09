@@ -1,16 +1,20 @@
 import asyncio
 import uuid
 import discord
+import bot
 from datetime import datetime
 from discord.ext import commands
 from sqlalchemy.future import select
 from bot import THEME , TESTING_GUILDS
+
+
 class Miscellaneous(commands.Cog):
     """
  Benedict's General Information Cog
     """
-@commands.slash_command(guild_ids=TESTING_GUILDS)
-async def info(self, ctx: discord.ApplicationContext):
+
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def botinfo(self, ctx: discord.ApplicationContext):
         """
         Display bot information
         """
@@ -42,8 +46,8 @@ async def info(self, ctx: discord.ApplicationContext):
 
         await ctx.respond(embed=info_embed)
 
-@commands.slash_command(guild_ids=TESTING_GUILDS)
-async def github(self, ctx: discord.ApplicationContext):
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def github(self, ctx: discord.ApplicationContext):
         """
         Link to the GitHub Repository
         """
@@ -51,8 +55,8 @@ async def github(self, ctx: discord.ApplicationContext):
         github_link = "https://github.com/InsaneCoder789/Benedict"
         await ctx.respond(github_link)
 
-@commands.slash_command(guild_ids=TESTING_GUILDS)
-async def support(self, ctx: discord.ApplicationContext):
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def support(self, ctx: discord.ApplicationContext):
         """
         Invite link for Benedict's Support Server
         """
@@ -60,8 +64,8 @@ async def support(self, ctx: discord.ApplicationContext):
         support_link = "https://discord.gg/nVNwGMKmd3"
         await ctx.respond(support_link)
 
-@commands.slash_command(guild_ids=TESTING_GUILDS)
-async def uptime(self, ctx: discord.ApplicationContext):
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def uptime(self, ctx: discord.ApplicationContext):
         """
         Check how long the bot has been up for
         """

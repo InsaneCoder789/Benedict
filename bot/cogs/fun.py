@@ -1,13 +1,12 @@
 import random
-import string
 import pyfiglet
+import string
 import discord
-from discord.ext import commands 
+from discord.ext import commands
 from discord.commands import Option
-import aiohttp
 
 
-from bot import TESTING_GUILDS, db
+from bot import TESTING_GUILDS
 from bot import THEME
 from bot.views import PollView
 
@@ -70,7 +69,7 @@ class Fun(commands.Cog):
         option_limit = 10
 
         # Convert options in string format to list
-        options = list(map(lambda x: x.strip(), options.split(",")))
+        options_list = list(map(lambda x: x.strip(), options.split(",")))
 
         if length < length_lower_limit:
             await ctx.respond(
@@ -84,7 +83,7 @@ class Fun(commands.Cog):
             )
             return
 
-        if len(options) > option_limit:
+        if len(options_list) > option_limit:
             await ctx.respond(
                 f"You can only have up to {option_limit} options."
             )
@@ -94,14 +93,14 @@ class Fun(commands.Cog):
             title=question, color=THEME, description="**Options:**\n"
         )
         poll_embed.set_author(
-            name=str(ctx.author), icon_url=ctx.author.avatar.url
+            name=str(ctx.author), icon_url=ctx.author.display_avatar.url  # type: ignore
         )
         # TODO: add an "Ends in..." message in the embed
 
-        for i, option in enumerate(options):
-            poll_embed.description += f"{i+1}) {option}\n"
+        for i, option in enumerate(options_list):
+            poll_embed.description += f"{i+1}) {option}\n"  # type: ignore
 
-        poll_view = PollView(options, length)
+        poll_view = PollView(options_list, length)
         interaction = await ctx.respond(embed=poll_embed, view=poll_view)
         await poll_view.wait()
 
@@ -113,7 +112,7 @@ class Fun(commands.Cog):
             title="Poll Over", color=THEME, description="**Results:**\n"
         )
         poll_over_embed.set_author(
-            name=str(ctx.author), icon_url=ctx.author.avatar.url
+            name=str(ctx.author), icon_url=ctx.author.display_avatar.url  # type: ignore
         )
         poll_over_embed.add_field(
             name="Total Votes", value=len(poll_view.voters)
@@ -121,13 +120,16 @@ class Fun(commands.Cog):
         poll_over_embed.add_field(name="Top Voted", value=sorted_votes[0][0])
 
         for i, (option, vote_count) in enumerate(sorted_votes):
-            poll_over_embed.description += (
+            poll_over_embed.description += (  # type: ignore
                 f"{i+1}) {option} - {vote_count} votes\n"
             )
 
-        await interaction.edit_original_message(
-            embed=poll_over_embed, view=None
-        )
+        if isinstance(interaction, discord.Interaction):
+            await interaction.edit_original_message(
+                embed=poll_over_embed, view=None
+            )
+        else:
+            await interaction.edit(embed=poll_over_embed, view=None)
 
     @commands.slash_command(guild_ids=TESTING_GUILDS)
     async def coinflip(self, ctx: discord.ApplicationContext):
@@ -226,7 +228,15 @@ class Fun(commands.Cog):
         await ctx.respond(f"```{ascii_text}```")
 
     @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def rps(self, ctx, pick: Option(str, "Choose your pick, Rock, Paper and Scissors", choices=["Rock", "Paper", "Scissors"])):
+    async def rps(
+        self,
+        ctx,
+        pick: Option(
+            str,
+            "Choose your pick, Rock, Paper and Scissors",
+            choices=["Rock", "Paper", "Scissors"],
+        ),
+    ):
         """Play Rock Paper Scissors with Benedict's Appa !"""
         await ctx.defer()
         ai_rps = ["Rock", "Paper", "Scissors"]
@@ -254,22 +264,116 @@ class Fun(commands.Cog):
     async def password(self, ctx, amount: int = 2):
         """Generates a password"""
         if amount > 31:
-            await ctx.send("The password must be 30 characters or lower", ephemeral=True)
+            await ctx.send(
+                "The password must be 30 characters or lower", ephemeral=True
+            )
             return
         try:
             nwpss = []
-            lst = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-                   'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '!', '@',
-                   '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '{', ",", '}', ']',
-                   '[', ';', ':', '<', '>', '?', '/', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '`', '~', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+            lst = [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i",
+                "j",
+                "k",
+                "l",
+                "m",
+                "n",
+                "o",
+                "p",
+                "q",
+                "r",
+                "s",
+                "t",
+                "u",
+                "v",
+                "w",
+                "x",
+                "y",
+                "z",
+                "!",
+                "@",
+                "#",
+                "$",
+                "%",
+                "^",
+                "&",
+                "*",
+                "(",
+                ")",
+                "-",
+                "_",
+                "+",
+                "=",
+                "{",
+                ",",
+                "}",
+                "]",
+                "[",
+                ";",
+                ":",
+                "<",
+                ">",
+                "?",
+                "/",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "0",
+                "`",
+                "~",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z",
+            ]
             for x in range(amount):
                 newpass = random.choice(lst)
                 nwpss.append(newpass)
-            fnpss = ''.join(nwpss)
+            fnpss = "".join(nwpss)
 
             e = discord.Embed(title="`Please check your direct messages!`", color=THEME)
             await ctx.respond(embed=e)
-            e = discord.Embed(title="Password Generator", description=f"Your One-Time-Password: {fnpss}", color=THEME)
+            
+            e = discord.Embed(
+                title="Password Generator",
+                description=f"Your One-Time-Password: {fnpss}",
+                color=THEME,
+            )
             await ctx.author.send(embed=e)
         except Exception as e:
             print(e)
@@ -309,7 +413,9 @@ class Fun(commands.Cog):
         bene_embed.add_field(
             name="Server Owner", value=str(ctx.guild.owner), inline=False
         )
-        bene_embed.add_field(name="Server ID", value=ctx.guild.id, inline=False)
+        bene_embed.add_field(
+            name="Server ID", value=ctx.guild.id, inline=False
+        )
         bene_embed.add_field(
             name="Server Age",
             value=f"Created on <t:{int(ctx.guild.created_at.timestamp())}>",
@@ -320,8 +426,9 @@ class Fun(commands.Cog):
 
     @commands.slash_command(name="memberinfo", guild_ids=TESTING_GUILDS)
     async def member_info(
-        self, ctx: discord.ApplicationContext, member: discord.Member = None):
-        """Displays Information of a User!"""
+        self, ctx: discord.ApplicationContext, member: discord.Member = None
+    ):
+        """Displays the Userinfo a Person"""
         await ctx.defer()
         if not member:
             member = ctx.author
@@ -347,6 +454,7 @@ class Fun(commands.Cog):
         bene_embed.add_field(
             name="Bot?", value="Yes" if member.bot else "No", inline=False
         )
+
         await ctx.respond(embed = bene_embed)
 
 @commands.slash_command(guild_ids=TESTING_GUILDS)
@@ -408,5 +516,7 @@ async def uptime(self, ctx: discord.ApplicationContext):
 
         humanized_time = f"<t:{self.launched_at}:R>"
         await ctx.respond(f"I was last restarted {humanized_time}")
+
+
 def setup(bot):
     bot.add_cog(Fun())

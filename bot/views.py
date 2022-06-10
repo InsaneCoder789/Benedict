@@ -130,6 +130,8 @@ class PollView(discord.ui.View):
             await interaction.response.send_message(
                 "You cannot vote in the same poll twice!", ephemeral=True
             )
+
+
 class PaginatedSelectView(discord.ui.View):
     """
     Paginated select menu for more than 25 options.
@@ -288,6 +290,7 @@ class PaginatedEmbedView(discord.ui.View):
             await interaction.message.delete()
             self.stop()
 
+
 class ReportView(discord.ui.View):
     anonymous: bool
 
@@ -312,3 +315,4 @@ class ReportView(discord.ui.View):
             self.anonymous = True
             self.stop()
             await interaction.message.edit(content="Sending...", view=None)
+

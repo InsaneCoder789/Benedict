@@ -7,21 +7,27 @@ from discord.ext import commands
 from bot import THEME
 import bot
 
+
 class Dropdown(discord.ui.Select):
     def __init__(self):
 
         options = [
             discord.SelectOption(
-                label="Moderation", description="Commands to uphold the peace and integrity of the server", emoji="⚙️"
+                label="Moderation",
+                description="Commands to uphold the peace and integrity of the server",
+                emoji="⚙️",
             ),
             discord.SelectOption(
-                label="Fun", description="Commands to have some fun and relieve stress (or induce it)", emoji="🎊"
+                label="Fun",
+                description="Commands to have some fun and relieve stress (or induce it)",
+                emoji="🎊",
             ),
             discord.SelectOption(
-                label="Bot Commands", description="Commands related to the bot, such as it's information etc", emoji="📜"
+                label="Bot Commands",
+                description="Commands related to the bot, such as it's information etc",
+                emoji="📜",
             ),
             discord.SelectOption(
-
                 label="Music", description="Commands to for playing music with Benedict", emoji="🎶"
             ),
             discord.SelectOption(
@@ -29,7 +35,6 @@ class Dropdown(discord.ui.Select):
                 label="Levelling", description="To check how Chit-Chatty you are!", emoji="📈"
             )
         ]
-
 
         super().__init__(
             placeholder="Select a Category",
@@ -64,8 +69,9 @@ class DropdownView(discord.ui.View):
         # Adds the dropdown to our view object.
         self.add_item(Dropdown())
 
+
 class Help(commands.Cog):
-    """ 
+    """
     Benedict's Command Helper!
     """
 
@@ -75,11 +81,11 @@ class Help(commands.Cog):
     @commands.slash_command()
     async def help(self, ctx):
         """
-         Get help regarding the working of a specific command!
+        Get help regarding the working of a specific command!
         """
         await ctx.defer()
         e = discord.Embed(
-            title="Benedict help", 
+            title="Benedict help",
             description="I'm a cool multi-purpose to help you manage your server better...",
             color=THEME)
         e.set_thumbnail(url = ctx.bot.user.avatar.url )
@@ -91,7 +97,9 @@ class Help(commands.Cog):
         e.add_field(name="3) Bot commands", value="```Commands related to the bot, such as it's information etc```")
         e.add_field(name="4) Music", value="```Commands to for playing music with Benedict```")
         e.add_field(name="5) Levelling", value="```To check how Chit-Chatty you are!```")
+        
         await ctx.respond(embed=e, view=DropdownView())
+
 
 def setup(bot):
     bot.add_cog(Help(bot))

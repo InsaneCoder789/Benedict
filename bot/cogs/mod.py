@@ -25,6 +25,7 @@ from bot.utils import str_time_to_timedelta
 from bot.views import ReportView 
 
 
+
 class Moderation(commands.Cog):
     """
     Commands to maintain peace and prosperity of a server
@@ -704,6 +705,7 @@ class Moderation(commands.Cog):
            duration = datetime.timedelta(minutes=minutes)
            await member.timeout_for(duration)#timeout for the amount of time given, then remove timeout
            await ctx.reply(f"Member timed out for {minutes} minutes.")
-           	
+
+
 def setup(bot):
     bot.add_cog(Moderation(bot))

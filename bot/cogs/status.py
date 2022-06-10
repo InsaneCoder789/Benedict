@@ -4,9 +4,10 @@ from discord.ext import commands, tasks
 
 class Status(commands.Cog):
     """
-    Bot Status for Benedict to Run 
+    Bot Status for Benedict to Run
 
     """
+
     def __init__(self, bot):
         self.bot = bot
         self.theme_color = discord.Color.purple()

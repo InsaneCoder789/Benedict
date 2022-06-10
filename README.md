@@ -4,3 +4,7 @@ Currently Under Devlopement , I (Owner of Bendict) want to give my user's a Prem
 
 For Contribution Pls Join :- [Benedict's Server](https://discord.gg/nVNwGMKmd3)
 LOL
+
+## Credits
+
+- [Roboto Round Font](https://github.com/shaqaruden/Roboto-Round/) by shaqaruden

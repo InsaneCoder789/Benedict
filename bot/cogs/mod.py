@@ -665,12 +665,10 @@ class Moderation(commands.Cog):
 
         else:
             await ctx.respond(embed=log_embeds[0])
-            @commands.slash_command(guild_ids=TESTING_GUILDS)
-            async def report(self, ctx: discord.ApplicationContext, report: str):
-              """
-        Report a Bug to the Developers
-             """
 
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def report(self, ctx: discord.ApplicationContext, report: str):
+        """Report a Bug to the Developers!"""
         report_view = ReportView(ctx.author.id)
         await ctx.respond(
             "Do you want to include your username with the report, so we can contact you if needed?",

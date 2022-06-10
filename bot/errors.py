@@ -1,4 +1,4 @@
-from discord.commands.errors import CheckFailure
+from discord.errors import CheckFailure
 
 
 class CommandDisabledError(CheckFailure):

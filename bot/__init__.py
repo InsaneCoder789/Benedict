@@ -5,7 +5,7 @@ import asyncio
 import pathlib
 
 import discord
-from discord.commands.errors import ApplicationCommandInvokeError
+from discord.errors import ApplicationCommandInvokeError
 from discord.ext import commands
 from discord.ext.commands import errors as discord_errors
 

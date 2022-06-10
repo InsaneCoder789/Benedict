@@ -12,6 +12,7 @@ from discord.ext.commands import errors as discord_errors
 from bot import db
 from bot import errors as bot_errors
 
+
 THEME = discord.Color.purple()
 
 TESTING_GUILDS: list[int] | None = (
@@ -31,6 +32,7 @@ HELP_EMBEDS: list[discord.Embed] = []
 async def on_ready():
     if user := bot.user:
         print("Logged in as", user)
+        
 
 
 @bot.event

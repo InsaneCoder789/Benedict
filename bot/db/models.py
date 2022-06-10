@@ -68,3 +68,11 @@ class AFK(Base):
 
     id = Column(String, primary_key=True)
     user_id = Column(BigInteger, nullable=False)
+
+
+class Guild(Base):
+    __tablename__ = "guilds"
+
+    id = Column(BigInteger, primary_key=True)
+    mute_role = Column(BigInteger, default=None, nullable=True)
+    clear_cap = Column(Integer, default=None, nullable=True)

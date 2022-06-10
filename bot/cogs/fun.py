@@ -62,6 +62,7 @@ class Fun(commands.Cog):
         """
         Ask a question. The time must be in minutes. Separate each option with a comma (,).
         """
+        await ctx.defer()
 
         length_lower_limit = 1  # 1 minute
         length_upper_limit = 7200  # 5 days
@@ -365,11 +366,9 @@ class Fun(commands.Cog):
                 nwpss.append(newpass)
             fnpss = "".join(nwpss)
 
-            e = discord.Embed(
-                title="Attempting to generate a password for you! (Since you are lazy!) **Please check your direct messages!**",
-                color=THEME,
-            )
+            e = discord.Embed(title="`Please check your direct messages!`", color=THEME)
             await ctx.respond(embed=e)
+            
             e = discord.Embed(
                 title="Password Generator",
                 description=f"Your One-Time-Password: {fnpss}",
@@ -384,6 +383,7 @@ class Fun(commands.Cog):
         """
         Get general information about the server
         """
+        await ctx.defer()
 
         human_count = len(
             [member for member in ctx.guild.members if not member.bot]
@@ -454,7 +454,68 @@ class Fun(commands.Cog):
         bene_embed.add_field(
             name="Bot?", value="Yes" if member.bot else "No", inline=False
         )
-        await ctx.respond(embed=bene_embed)
+
+        await ctx.respond(embed = bene_embed)
+
+@commands.slash_command(guild_ids=TESTING_GUILDS)
+async def info(self, ctx: discord.ApplicationContext):
+        """
+        Display bot information
+        """
+
+        ping = int(self.bot.latency * 1000)
+        guild_count = str(len(self.bot.guilds))
+        total_member_count = 0
+
+        for guild in self.bot.guilds:
+            total_member_count += guild.member_count
+
+        info_embed = discord.Embed(title="Benedict Information", color=THEME)
+        info_embed.set_author(
+            name=str(ctx.author), icon_url=ctx.author.avatar.url
+        )
+        info_embed.set_thumbnail(url=self.bot.user.avatar.url)
+
+        info_embed.add_field(
+            name="Latency/Ping", value=f"{ping}ms", inline=False
+        )
+        info_embed.add_field(
+            name="Server Count", value=guild_count, inline=False
+        )
+        info_embed.add_field(
+            name="Total Member Count",
+            value=str(total_member_count),
+            inline=False,
+        )
+
+        await ctx.respond(embed=info_embed)
+
+@commands.slash_command(guild_ids=TESTING_GUILDS)
+async def github(self, ctx: discord.ApplicationContext):
+        """
+        Link to the GitHub Repository
+        """
+
+        github_link = "https://github.com/InsaneCoder789/Benedict"
+        await ctx.respond(github_link)
+
+@commands.slash_command(guild_ids=TESTING_GUILDS)
+async def support(self, ctx: discord.ApplicationContext):
+        """
+        Invite link for Benedict's Support Server
+        """
+
+        support_link = "https://discord.gg/nVNwGMKmd3"
+        await ctx.respond(support_link)
+
+@commands.slash_command(guild_ids=TESTING_GUILDS)
+async def uptime(self, ctx: discord.ApplicationContext):
+        """
+        Check how long the bot has been up for
+        """
+
+        humanized_time = f"<t:{self.launched_at}:R>"
+        await ctx.respond(f"I was last restarted {humanized_time}")
 
 
 def setup(bot):

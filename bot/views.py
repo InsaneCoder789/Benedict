@@ -315,4 +315,3 @@ class ReportView(discord.ui.View):
             self.anonymous = True
             self.stop()
             await interaction.message.edit(content="Sending...", view=None)
-

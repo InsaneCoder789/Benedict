@@ -9,8 +9,7 @@ import asyncio
 import math
 from discord.ext import commands
 from bot import TESTING_GUILDS
-from discord.commands import \
-    slash_command , Option
+from discord.commands import slash_command, Option
 from typing import Sequence
 from uuid import uuid4
 from discord.errors import HTTPException
@@ -22,8 +21,7 @@ from bot import THEME
 from bot import views
 from bot.views import ConfirmView
 from bot.utils import str_time_to_timedelta
-from bot.views import ReportView 
-
+from bot.views import ReportView
 
 
 class Moderation(commands.Cog):
@@ -678,17 +676,13 @@ class Moderation(commands.Cog):
         timed_out = await report_view.wait()
 
         if timed_out or report_view.anonymous:
-            report_msg = (
-                f"Recieved the following Report from an anonymous User :\n{report}"
-            )
+            report_msg = f"Recieved the following Report from an anonymous User :\n{report}"
             await ctx.respond(
                 f"Thank you {ctx.author.mention}, your Anonymous Report has been recorded, Keep us helping this way to make Benedict Better."
             )
 
         else:
-            report_msg = (
-                f"**{ctx.author}** has send a Report :\n{report}"
-            )
+            report_msg = f"**{ctx.author}** has send a Report :\n{report}"
             await ctx.respond(
                 f"Thank you {ctx.author.mention}, your non-anonymous Report has been recorded, Keep us helping this way to make Benedict Better."
             )
@@ -698,13 +692,17 @@ class Moderation(commands.Cog):
         await report_channel.send(
             report_msg, allowed_mentions=discord.AllowedMentions.none()
         )
-        
+
         @commands.slash_command(guild_ids=TESTING_GUILDS)
-        async def timeout(self, ctx, member: Option(discord.Member), minutes: Option(int)):
-           """Apply a timeout to a member"""
-           duration = datetime.timedelta(minutes=minutes)
-           await member.timeout_for(duration)#timeout for the amount of time given, then remove timeout
-           await ctx.reply(f"Member timed out for {minutes} minutes.")
+        async def timeout(
+            self, ctx, member: Option(discord.Member), minutes: Option(int)
+        ):
+            """Apply a timeout to a member"""
+            duration = datetime.timedelta(minutes=minutes)
+            await member.timeout_for(
+                duration
+            )  # timeout for the amount of time given, then remove timeout
+            await ctx.reply(f"Member timed out for {minutes} minutes.")
 
 
 def setup(bot):

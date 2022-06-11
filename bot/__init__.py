@@ -32,7 +32,6 @@ HELP_EMBEDS: list[discord.Embed] = []
 async def on_ready():
     if user := bot.user:
         print("Logged in as", user)
-        
 
 
 @bot.event

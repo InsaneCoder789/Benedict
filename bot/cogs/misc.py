@@ -5,7 +5,7 @@ import bot
 from datetime import datetime
 from discord.ext import commands
 from sqlalchemy.future import select
-from bot import THEME , TESTING_GUILDS
+from bot import THEME, TESTING_GUILDS
 
 
 class Miscellaneous(commands.Cog):
@@ -13,7 +13,7 @@ class Miscellaneous(commands.Cog):
     Benedict's General Information Cog
     """
 
-    
+
 @commands.slash_command(guild_ids=TESTING_GUILDS)
 async def github(self, ctx: discord.ApplicationContext):
     """
@@ -38,17 +38,11 @@ async def botinfo(self, ctx: discord.ApplicationContext):
         total_member_count += guild.member_count
 
     info_embed = discord.Embed(title="Benedict Information", color=THEME)
-    info_embed.set_author(
-        name=str(ctx.author), icon_url=ctx.author.avatar.url
-    )
+    info_embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar.url)
     info_embed.set_thumbnail(url=self.bot.user.avatar.url)
 
-    info_embed.add_field(
-        name="Latency/Ping", value=f"{ping}ms", inline=False
-    )
-    info_embed.add_field(
-        name="Server Count", value=guild_count, inline=False
-    )
+    info_embed.add_field(name="Latency/Ping", value=f"{ping}ms", inline=False)
+    info_embed.add_field(name="Server Count", value=guild_count, inline=False)
     info_embed.add_field(
         name="Total Member Count",
         value=str(total_member_count),

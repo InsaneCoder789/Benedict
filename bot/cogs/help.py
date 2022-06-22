@@ -79,7 +79,7 @@ class Dropdown(discord.ui.Select):
             e = discord.Embed(
                 title="Levelling Commands",
                 color=THEME,
-                description="Currently Under Devlopment , Sorry for the inconvinience!",
+                description="",
             )
             await interaction.response.send_message(embed=e, ephemeral=True)
 

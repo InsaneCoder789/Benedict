@@ -52,7 +52,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         )
 
 
-class Music(commands.Cog):
+class SlashMusic(commands.Cog):
     """
     Jam to your favorite tunes with your favorite bot
     """
@@ -252,12 +252,6 @@ class Music(commands.Cog):
             )
 
     @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def now(self, ctx: commands.Context):
-        """Displays the currently playing song."""
-
-        await ctx.send(embed=ctx.voice_state.current.create_embed())
-
-    @commands.slash_command(guild_ids=TESTING_GUILDS)
     async def queue(self, ctx: discord.ApplicationContext):
         """
         View all the songs currently in the queue
@@ -299,39 +293,6 @@ class Music(commands.Cog):
 
         await ctx.respond(embed=queue_embed)
 
-    @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def shuffle(self, ctx: commands.Context):
-        """Shuffles the queue."""
-
-        if len(ctx.voice_state.songs) == 0:
-            return await ctx.send("Empty queue.")
-
-        ctx.voice_state.songs.shuffle()
-        await ctx.message.add_reaction("✅")
-
-    @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def remove(self, ctx: commands.Context, index: int):
-        """Removes a song from the queue at a given index."""
-
-        if len(ctx.voice_state.songs) == 0:
-            return await ctx.send("Empty queue.")
-
-        ctx.voice_state.songs.remove(index - 1)
-        await ctx.message.add_reaction("✅")
-
-    @commands.slash_command(guild_ids=TESTING_GUILDS)
-    async def loop(self, ctx: commands.Context):
-        """Loops the currently playing song.
-        Invoke this command again to unloop the song.
-        """
-
-        if not ctx.voice_state.is_playing:
-            return await ctx.send("Nothing being played at the moment.")
-
-        # Inverse boolean value to loop and unloop.
-        ctx.voice_state.loop = not ctx.voice_state.loop
-        await ctx.message.add_reaction("✅")
-
     @play.before_invoke
     @leave.before_invoke
     @skip.before_invoke
@@ -361,4 +322,4 @@ class Music(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Music(bot))
+    bot.add_cog(SlashMusic(bot))

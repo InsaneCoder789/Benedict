@@ -17,7 +17,7 @@ class Levels(commands.Cog):
     To keep track of how talkative you are!
     """
 
-    XP_REWARD_RANGE = (2, 8)  # first number is min, second is max
+    XP_REWARD_RANGE = (100, 3000)  # first number is min, second is max
     LVL_UP_MSG = "Congrats {member.mention}! You've reached level {level}!"
 
     levels_group = discord.SlashCommandGroup(

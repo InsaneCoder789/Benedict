@@ -518,6 +518,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.respond("Slowmode has been disabled")
 
+#Clear Command
     @commands.slash_command(guild_ids=TESTING_GUILDS)
     @commands.bot_has_guild_permissions(manage_messages=True)
     @commands.has_guild_permissions(manage_messages=True)
@@ -553,6 +554,8 @@ class Moderation(commands.Cog):
         await ctx.channel.purge(limit=amount)
         await ctx.respond(f"Cleared {amount} message(s)", ephemeral=True)
 
+
+#Nuke Command
     @commands.slash_command(guild_ids=TESTING_GUILDS)
     @commands.bot_has_guild_permissions(manage_channels=True)
     @commands.has_guild_permissions(administrator=True)
@@ -598,6 +601,8 @@ class Moderation(commands.Cog):
             except HTTPException as e:
                 await new_ch.delete()
                 await ctx.send(f"Unable to nuke {channel.mention}: {e.text}")
+
+#Impersonation Log Command
 
     @commands.slash_command(name="impersonatelogs", guild_id=TESTING_GUILDS)
     @commands.has_guild_permissions(administrator=True)
@@ -665,6 +670,9 @@ class Moderation(commands.Cog):
         else:
             await ctx.respond(embed=log_embeds[0])
 
+
+
+#Report Bug Command
     @commands.slash_command(guild_ids=TESTING_GUILDS)
     async def report(self, ctx: discord.ApplicationContext, report: str):
         """Report a Bug to the Developers!"""
@@ -693,8 +701,8 @@ class Moderation(commands.Cog):
             report_msg, allowed_mentions=discord.AllowedMentions.none()
         )
 
-        @commands.slash_command(guild_ids=TESTING_GUILDS)
-        async def timeout(
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def timeout(
             self, ctx, member: Option(discord.Member), minutes: Option(int)
         ):
             """Apply a timeout to a member"""
@@ -703,6 +711,28 @@ class Moderation(commands.Cog):
                 duration
             )  # timeout for the amount of time given, then remove timeout
             await ctx.reply(f"Member timed out for {minutes} minutes.")
+
+
+#Github Command
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def github(self, ctx: discord.ApplicationContext):
+        """
+    Link to the GitHub Repository
+        """
+        
+        github_link = "https://github.com/InsaneCoder789/Benedict"
+        await ctx.respond(github_link)
+
+
+#Uptime Command
+    @commands.slash_command(guild_ids=TESTING_GUILDS)
+    async def uptime(self, ctx: discord.ApplicationContext):
+       """
+    Check how long the bot has been up for
+       """
+       
+       humanized_time = f"<t:{self.launched_at}:R>"
+       await ctx.respond(f"I was last restarted {humanized_time}")
 
 
 def setup(bot):

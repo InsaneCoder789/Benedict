@@ -24,7 +24,7 @@ class GuildSettings(Base):
 class Member(Base):
     __tablename__ = "members"
 
-    base_level_requirement = 5000
+    base_level_requirement = 1000
     level_requirement_factor = 150
 
     user_id = Column(BigInteger, nullable=False, primary_key=True)
